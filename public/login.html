@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" type="text/css" href="css/main.css" />
+  <title>Login</title>
+  <link rel="stylesheet" type="text/css" href="css/main.css"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
@@ -13,6 +13,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+
 </head>
 <body>
   <nav class="navbar navbar-expand-lg bg-light">
@@ -45,64 +46,70 @@
     </div>
   </nav>
 
-  <div class="container mt-3">
-  </div>
+ <!-- 로그인 -->
+ <div class="container mt-3">
+    <div class="mb-3">
+      <input type="email" class="form-control" placeholder="email" id="email">
+    </div>
+    <div class="mb-3">
+      <input type="password" class="form-control" placeholder="pw" id="pw">
+    </div>
+    <button type="submit" class="btn btn-primary" id="login">로그인</button>
+    <button class="btn btn-primary" id="logout">로그아웃</button>
 
+ </div>
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
 
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-  
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAJQLSXeQcurFSMb19BeAR68RIceNXjlVo",
-      authDomain: "carrot-27954.firebaseapp.com",
-      projectId: "carrot-27954",
-      storageBucket: "carrot-27954.appspot.com",
-      messagingSenderId: "937923257425",
-      appId: "1:937923257425:web:15807ed8d452db11ab0470"
-    };
-  
-    firebase.initializeApp(firebaseConfig)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAJQLSXeQcurFSMb19BeAR68RIceNXjlVo",
+    authDomain: "carrot-27954.firebaseapp.com",
+    projectId: "carrot-27954",
+    storageBucket: "carrot-27954.appspot.com",
+    messagingSenderId: "937923257425",
+    appId: "1:937923257425:web:15807ed8d452db11ab0470"
+  };
 
-    // db에서 게시물 불러오기
-    const db = firebase.firestore();
-    db.collection('product').get().then((결과)=>{
-      결과.forEach((doc)=>{
-        var 템플릿 = ` <div class="product">
-                          <div class="thumbnail">
-                            <img src="${doc.data().이미지}" width="300px">
-                          </div>
-                          <div class="flex-grow-1 p-4">
-                            <a href="/detail.html?id=${doc.id}">
-                              <h5 class="title">${doc.data().제목}</h5>
-                            </a>
-                            <p class="price">${doc.data().가격}원</p>
-                            <p class="float-end">❤0</p>
-                          </div>
-                        </div>`;
-        $('.container').append(템플릿)
-      })
-    });
+  firebase.initializeApp(firebaseConfig)
+  const db = firebase.firestore();
 
-    //유저정보 확인
-    var 뺀거 = localStorage.getItem('user')
-    // JSON.parse => 오브젝트 자료에서 따옴표 제거
+  // **로그인**
+    var loginBtn = document.getElementById('login');
+    loginBtn.addEventListener('click',()=>{
+
+        var emailVal = document.getElementById('email').value;
+        var pwdVal = document.getElementById('pw').value;
+
+        firebase.auth().signInWithEmailAndPassword(emailVal, pwdVal).then((result)=>{
+            console.log(result.user);
+            window.location.href = "/index.html"
+        })
+    })
+
+    //**유저정보 확인**
+    var 뺀거 = localStorage.getItem('user');
     $('#userName').html(JSON.parse(뺀거).displayName)
 
+  // **로그인 유저 확인**
+  firebase.auth().onAuthStateChanged((user)=>{
+    if (user) {
+      console.log(user)
+      localStorage.setItem('user', JSON.stringify(user))
+      // JSON.stringify => object 자료를 문자로 바꿈
+      alert('이미 로그인되었습니다.')
+    }
+  })
 
+    // **로그아웃**
+    var logoutBtn = document.getElementById('logout');
+    logoutBtn.addEventListener('click', ()=>{
+        firebase.auth().signOut()
+        //로그아웃시 localstorage의 유저 정보 삭제
+        localStorage.removeItem('user');
+      window.location.href = "/index.html"
 
-    // 로그인 유저 확인
-    firebase.auth().onAuthStateChanged((user)=>{
-      if (user) {
-        console.log(user)
-        localStorage.setItem('user', JSON.stringify(user))
-        // JSON.stringify => object 자료를 문자로 바꿈
-      }
     })
-  </script>
- 
+</script>
+
 </body>
 </html>

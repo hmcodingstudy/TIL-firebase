@@ -1,6 +1,7 @@
 .product {
     display: flex;
     padding: 10px;
+    /* margin-bottom: 20px; */
   }
 .thumbnail {
     max-width: 200px;
@@ -9,10 +10,6 @@
     background-size: cover;
     background-position: center;
   }
-  .product .price {
-    font-size: 16px;
-    font-weight: 600;
-  }
   .product .title {
     font-size: 17px;
     font-weight: 600;
@@ -20,4 +17,7 @@
   .product .date {
     color: grey;
     font-size: 13px;
+  }
+  .flex-grow-1{
+    margin-left: 150px;
   }

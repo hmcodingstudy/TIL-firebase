@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join</title>
+  <link rel="stylesheet" type="text/css" href="css/index.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJQLSXeQcurFSMb19BeAR68RIceNXjlVo",
+      authDomain: "carrot-27954.firebaseapp.com",
+      projectId: "carrot-27954",
+      storageBucket: "carrot-27954.appspot.com",
+      messagingSenderId: "937923257425",
+      appId: "1:937923257425:web:15807ed8d452db11ab0470"
+    };
+  
+    firebase.initializeApp(firebaseConfig)
+    const db = firebase.firestore();
+    </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Carrot</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Pricing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled">Disabled</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 가입 -->
+  <div class="container mt-3">
+    <div class="mb-3">
+      <input type="text" class="form-control" placeholder="name" id="name-new">
+    </div>
+    <div class="mb-3">
+      <input type="email" class="form-control" placeholder="email(형식에 맞게)" id="email-new">
+    </div>
+    <div class="mb-3">
+      <input type="password" class="form-control" placeholder="pw(6자 이상)" id="pw-new">
+    </div>
+    <button type="submit" class="btn btn-primary" id="register">가입하기</button>
+ </div>
+
+<script>
+    // db.collection('product').get().then((결과)=>{
+    //   결과.forEach((doc)=>{
+    //     var 템플릿 = ` <div class="product" style="display: flex">
+    //                       <div class="thumbnail">
+    //                         <img src="${doc.data().이미지}" width="300px">
+    //                       </div>
+    //                       <div class="flex-grow-1 p-4">
+    //                         <h5 class="title">${doc.data().제목}</h5>
+    //                         <p class="price">${doc.data().가격}원</p>
+    //                         <p class="float-end">❤0</p>
+    //                       </div>
+    //                     </div>`;
+    //     $('.container').append(템플릿)
+    //   })
+    // });
+
+    var registerBtn = document.getElementById('register');
+    registerBtn.addEventListener('click',()=>{
+
+        var 이름 = document.getElementById('name-new').value;
+        var emailVal = document.getElementById('email-new').value;
+        var pwdVal = document.getElementById('pw-new').value;
+
+        firebase.auth().createUserWithEmailAndPassword(emailVal, pwdVal).then((result)=>{
+            console.log(result.user);
+            result.user.updateProfile( {displayName : 이름} )
+        })
+    })
+
+//     $('#register').click(function(){
+  
+//   var 이메일 = $('#email-new').val();
+//   var 패스워드 = $('#pw-new').val();
+
+//   firebase.auth().createUserWithEmailAndPassword(이메일, 패스워드).then((result)=>{
+//     console.log(result.user)
+//   })
+// })
+  </script>
+</body>
+</html>

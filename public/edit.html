@@ -43,8 +43,7 @@
         <input type="text" class="form-control mt-2" id="title" placeholder="title">
         <textarea class="form-control mt-2" id="content" placeholder="content"></textarea>
         <input type="text" class="form-control mt-2" id="price" placeholder="price">
-        <input class="form-control mt-2" type="file" id="image">
-        <button class="btn btn-danger mt-3" id="send">올리기</button>
+        <button class="btn btn-danger mt-3" id="send">수정하기</button>
       </div>
 
 
@@ -66,6 +65,14 @@
     const storage = firebase.storage();
 
 
+    // db에서 게시물 정보 가져오기
+    var 쿼리스트링 = new URLSearchParams(window.location.search)
+
+    db.collection('product').doc(쿼리스트링.get('id')).get().then((result)=>{
+        document.getElementById('title').value = `${result.data().제목}`
+        document.getElementById('content').value = `${result.data().내용}`
+        document.getElementById('price').value = `${result.data().가격}`
+    })
 
     //db로 전송
     const btn = document.getElementById('send')
@@ -75,47 +82,39 @@
         let content = document.getElementById('content')
         let price = document.getElementById('price')
 
-        
-        var file = document.querySelector('#image').files[0];
-        var storageRef = storage.ref();
-        var 저장할경로 = storageRef.child('image/' + file.name);
-        var 업로드작업 = 저장할경로.put(file)
-
-        //[이미지 업로드]
-        업로드작업.on( 'state_changed', 
-        // 변화시 동작하는 함수 
-        null, 
-        //에러시 동작하는 함수
-        (error) => {
-          console.error('실패사유는', error);
-        }, 
-        // 성공시 동작하는 함수
-        () => {
-          업로드작업.snapshot.ref.getDownloadURL().then((url) => {
-            console.log('업로드된 경로는', url);
-
-
-            var datalist = {
-            제목 : title.value, 
-            내용 : content.value, 
-            가격 : parseInt(price.value),
-            날짜 : new Date(),
-            이미지: url,
-            uid : JSON.parse( localStorage.getItem('user') ).uid,
-            이름 : JSON.parse( localStorage.getItem('user') ).displayName
-            }
-
-            db.collection('product').add(datalist).then((result)=>{
-                window.location.href = "/index.html"
-                console.log(result);
-                //result(작명 가능) = 전송된 자료의 정보 담김
-            }).catch((err)=>{
-                console.log(err);
-            })
-          });
+        var 바꿀거 = {
+        제목 : title.value, 
+        내용 : content.value, 
+        가격 : parseInt(price.value),
+        // 이미지: url,
+        uid : JSON.parse( localStorage.getItem('user') ).uid,
+        이름 : JSON.parse( localStorage.getItem('user') ).displayName
         }
-    );
-    })
+
+        db.collection('product').doc(쿼리스트링.get('id')).update(바꿀거)
+      });        
+        // var file = document.querySelector('#image').files[0];
+        // var storageRef = storage.ref();
+        // var 저장할경로 = storageRef.child('image/' + file.name);
+        // var 업로드작업 = 저장할경로.put(file)
+
+        // //[이미지 업로드]
+        // 업로드작업.on( 'state_changed', 
+        // // 변화시 동작하는 함수 
+        // null, 
+        // //에러시 동작하는 함수
+        // (error) => {
+        //   console.error('실패사유는', error);
+        // }, 
+        // // 성공시 동작하는 함수
+        // () => {
+        //   업로드작업.snapshot.ref.getDownloadURL().then((url) => {
+        //     console.log('업로드된 경로는', url);
+    //     }
+    // );
+    // })
+
+    
   </script>
 
 </body>
